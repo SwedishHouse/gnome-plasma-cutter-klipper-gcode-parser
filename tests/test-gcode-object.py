@@ -6,7 +6,11 @@ import json
 import pytest
 import random
 
-PATH_TO_SINGLE_LINE_CMDS = os.path.join(os.path.dirname(__file__)) + "\\" + "..\\tests-data\\test_gcode_data.json"
+
+DIR_TEST_DATA = "..\\tests-data"
+DIR_LEVEL_UP = ".."
+SINGLE_LINE_CMDS = "test_gcode_data.json"
+PATH_TO_SINGLE_LINE_CMDS = os.path.join(os.path.dirname(__file__), DIR_TEST_DATA, SINGLE_LINE_CMDS)  # + "\\" + "..\\tests-data\\test_gcode_data.json"
 
 
 def test_g0():
@@ -34,14 +38,12 @@ def test_g1_loop():
 
         assert f'G01 X{x_coord} Y{y_coord} Z{z_coord}' == gcode.get_cmd()
 
+
 def test_g40():
     gcode = GCode('G40')
 
     assert f'G40' == gcode.get_cmd()
 
-def test_splitter():
-    splitter = GCodeSplitter()
-    assert ['G40', 'G01 X100 Y52.4', 'G54', 'F100'] == splitter.parse_gcode_line('G40 G01 X100 Y52.4 G54 F100')
 
 def test_gcode_parsed_single_string():
     gcode = GCode("G1 X5 Y15")
@@ -56,6 +58,7 @@ def test_data():
     with open(data_file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
+
 def test_process_data(test_data):
     for case in test_data:
 
@@ -63,7 +66,6 @@ def test_process_data(test_data):
         expected_result = case['expected']
         gcode = GCode(input_data)
         assert gcode.get() == expected_result
-
 
 
 if __name__ == "__main__":

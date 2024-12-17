@@ -1,0 +1,129 @@
+[
+  {
+    "input": "G0 X10 Y20",
+    "expected":
+        [
+          {
+            "cmd": "G0",
+            "params":
+                {
+                  "X": 10,
+                  "Y": 20
+                }
+          }
+        ]
+  },
+  {
+    "input": "G40 G54 G90 G49 G80 G91.1",
+    "expected":
+        [
+          {
+            "cmd": "G40",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G54",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G90",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G49",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G80",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G91.1",
+            "params":
+                {}
+          }
+        ]
+  },
+  {
+    "input": "G40 G54",
+    "expected":
+        [
+          {
+            "cmd": "G40",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G54",
+            "params":
+                {}
+          }
+        ]
+  },
+  {
+    "input": "G40\nG54\nG90\nG49\nG80\nG91.1",
+    "expected":
+        [
+          {
+            "cmd": "G40",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G54",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G90",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G49",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G80",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G91.1",
+            "params":
+                {}
+          }
+        ]
+  },
+  {
+    "input": "G92\nG01 X100 Y-152.2 Z21.1\nG90",
+    "expected":
+        [
+          {
+            "cmd": "G92",
+            "params":
+                {}
+          },
+          {
+            "cmd": "G01",
+            "params":
+                {
+                  "X": 100,
+                  "Y": -152.2,
+                  "Z": 21.1
+                }
+          },
+          {
+            "cmd": "G90",
+            "params":
+                {}
+          }
+        ]
+  }
+]

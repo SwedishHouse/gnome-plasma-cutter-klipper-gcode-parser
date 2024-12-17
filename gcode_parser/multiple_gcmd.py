@@ -21,7 +21,7 @@ import re
 #         return self.name + ' ' * bool(self.get_param) + self.get_param
 
 class GCode:
-
+    PATTERN = r"([A-Z]+)([-+]?\d*\.?\d+)"
     def __init__(self, line: str) -> None:
         gcode = line.split()
         self.cmd = gcode[0]
@@ -30,11 +30,10 @@ class GCode:
     def get(self):
         return {"cmd": self.cmd, "params": self.params}
 
-    @staticmethod
-    def convert_to_dict(coordinate_list):
+    def convert_to_dict(self, coordinate_list):
         result = {}
         for item in coordinate_list:
-            match = re.match(r"([A-Z]+)([-+]?\d*\.?\d+)", item)
+            match = re.match(self.PATTERN, item)
             if match:
                 key = match.group(1)
                 try:
@@ -61,35 +60,37 @@ class GCode:
 class GCodeSplitter:
 
     def __init__(self) -> None:
-        self.pattern = r'([GMSFTDH]\d+\.?\d*)|([F]\d+\.?\d*)'
+        self.PATTERN = r'([GMSFTDH]\d+\.?\d*)|([XYZIJKR]\d+\.?\d*)'
 
-    def parse_gcode_line(self, line):
+    def parse_gcode_line(self, line: list) -> list:
         # Регулярное выражение для поиска команд и их параметров
-        pattern = r'([GMSFTDH]\d+\.?\d*)|([XYZIJKR]\d+\.?\d*)'
-        matches = re.findall(pattern, line)
+        result = []
+        for item in line:
+            matches = re.findall(self.PATTERN, item)
 
-        # Объединяем команды и параметры в один список
-        commands = []
-        current_command = None
+            # Объединяем команды и параметры в один список
+            commands = []
+            current_command = None
 
-        for match in matches:
-            command = match[0] if match[0] else match[1]
+            for match in matches:
+                command = match[0] if match[0] else match[1]
 
-            # Если это новая команда, добавляем ее в список
-            if re.match(r'[GMSFTDH]', command):
-                if current_command:
-                    commands.append(current_command)
-                current_command = command
-            else:
-                # Если это параметр, добавляем его к текущей команде
-                if current_command:
-                    current_command += ' ' + command
+                # Если это новая команда, добавляем ее в список
+                if re.match(r'[GMSFTDH]', command):
+                    if current_command:
+                        commands.append(current_command)
+                    current_command = command
+                else:
+                    # Если это параметр, добавляем его к текущей команде
+                    if current_command:
+                        current_command += ' ' + command
 
-        # Добавляем последнюю команду
-        if current_command:
-            commands.append(current_command)
+            # Добавляем последнюю команду
+            if current_command:
+                commands.append(current_command)
 
-        return commands
+            result.extend(commands)
+        return result
 
 
 if __name__ == '__main__':
