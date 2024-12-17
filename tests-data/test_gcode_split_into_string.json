@@ -1,3 +1,42 @@
 [
-
+  {
+    "input": "G0 X10 Y20",
+    "expected": ["G0 X10 Y20"]
+  },
+  {
+    "input": "G91\nG0 X10 Y20\nG90",
+    "expected": ["G91", "G0 X10 Y20", "G90"]
+  },
+  {
+    "input": "G91\nG01 X100 Y-152.2 Z21.1\nG90",
+    "expected": ["G91", "G01 X100 Y-152.2 Z21.1", "G90"]
+  },
+  {
+    "input": "G40\nG54\nG90\nG49\nG80\nG91.1",
+    "expected": ["G40", "G54", "G90", "G49", "G80", "G91.1"]
+  },
+  {
+    "input": "G40 G54",
+    "expected": ["G40", "G54"]
+  },
+  {
+    "input": "G40\nG54",
+    "expected": ["G40", "G54"]
+  },
+  {
+    "input": "G21 (Units: Metric)",
+    "expected": ["G21"]
+  },
+  {
+    "input": "(Date: 08.02.2024)",
+    "expected": []
+  },
+  {
+    "input": "",
+    "expected": []
+  },
+  {
+    "input": "\n\n\n",
+    "expected": []
+  }
 ]

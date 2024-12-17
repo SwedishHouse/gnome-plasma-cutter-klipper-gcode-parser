@@ -30,3 +30,17 @@ def test_splitter():
     # res = [GCode(i) for i in ['G40', 'G01 X100 Y52.4', 'G54', 'F100']]
     assert ['G40', 'G01 X100 Y52.4', 'G54', 'F100'] == splitter.parse_gcode_line('G40 G01 X100 Y52.4 G54 F100'.split('\n'))
 
+@pytest.fixture
+def test_data():
+    # data_file_path = "D:\\GitHub\\stepper-parser\\gcode-files\\test_gcode_data.json"
+    data_file_path = PATH_TO_CMDS_WITHOUT_PARSED_PARAMS
+    with open(data_file_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def test_string_cmd(test_data):
+    splitter = GCodeSplitter()
+
+    for index, case in enumerate(test_data):
+        input_data = case['input'].split('\n')
+        expected_result = case['expected']
+        assert splitter.parse_gcode_line(input_data) == expected_result, f"{index}: data = {input_data}"

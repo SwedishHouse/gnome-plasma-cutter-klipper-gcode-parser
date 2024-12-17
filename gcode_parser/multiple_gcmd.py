@@ -60,7 +60,7 @@ class GCode:
 class GCodeSplitter:
 
     def __init__(self) -> None:
-        self.PATTERN = r'([GMSFTDH]\d+\.?\d*)|([XYZIJKR]\d+\.?\d*)'
+        self.PATTERN = r'([GMSFTDH]-?\d+\.?\d*)|([XYZIJKR]-?\d+\.?\d*)|\(.*?\)'
 
     def parse_gcode_line(self, line: list) -> list:
         # Регулярное выражение для поиска команд и их параметров
@@ -87,7 +87,7 @@ class GCodeSplitter:
 
             # Добавляем последнюю команду
             if current_command:
-                commands.append(current_command)
+                commands.append(current_command.strip())
 
             result.extend(commands)
         return result
@@ -95,3 +95,6 @@ class GCodeSplitter:
 
 if __name__ == '__main__':
     gcode = GCode("G00 X15.2")
+    splitter = GCodeSplitter()
+    data = "G91\nG01 X100 Y-152.2 Z21.1\nG90".split('\n')
+    res = splitter.parse_gcode_line(data)
