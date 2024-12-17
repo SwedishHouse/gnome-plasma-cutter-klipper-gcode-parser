@@ -4,6 +4,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from gcode_parser.multiple_gcmd import GCode, GCodeSplitter
 import json
 import pytest
+import random
+
+PATH_TO_SINGLE_LINE_CMDS = os.path.join(os.path.dirname(__file__)) + "\\" + "..\\tests-data\\test_gcode_data.json"
 
 
 def test_g0():
@@ -21,6 +24,15 @@ def test_g1():
 
     assert f'G01 X{x_coord} Y{y_coord} Z{z_coord}' == gcode.get_cmd()
 
+
+def test_g1_loop():
+    for i in range(-3000, 3000):
+        x_coord = random.random() + i
+        y_coord = random.random() + i
+        z_coord = random.random() + i
+        gcode = GCode(f'G01 X{x_coord} Y{y_coord} Z{z_coord}')
+
+        assert f'G01 X{x_coord} Y{y_coord} Z{z_coord}' == gcode.get_cmd()
 
 def test_g40():
     gcode = GCode('G40')
@@ -40,7 +52,7 @@ def test_gcode_parsed_single_string():
 @pytest.fixture
 def test_data():
     # data_file_path = "D:\\GitHub\\stepper-parser\\gcode-files\\test_gcode_data.json"
-    data_file_path = os.path.join(os.path.dirname(__file__)) + "\\" + "..\\tests-data\\test_gcode_data.json"
+    data_file_path = PATH_TO_SINGLE_LINE_CMDS
     with open(data_file_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 

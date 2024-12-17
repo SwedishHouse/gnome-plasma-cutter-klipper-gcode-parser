@@ -34,10 +34,14 @@ class GCode:
     def convert_to_dict(coordinate_list):
         result = {}
         for item in coordinate_list:
-            match = re.match(r"([A-Z]+)([-+]?\d+)", item)
+            match = re.match(r"([A-Z]+)([-+]?\d*\.?\d+)", item)
             if match:
                 key = match.group(1)
-                value = float(match.group(2))
+                try:
+                    value = int(match.group(2))
+                except ValueError:
+                    value = float(match.group(2))
+
                 result[key] = value
         return result
 
@@ -89,4 +93,4 @@ class GCodeSplitter:
 
 
 if __name__ == '__main__':
-    pass
+    gcode = GCode("G00 X15.2")
