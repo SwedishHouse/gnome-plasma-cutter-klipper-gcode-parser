@@ -1,0 +1,29 @@
+[
+    {
+        "input": "G0 X10 Y20",
+        "expected": {
+            "cmd": "G0",
+            "params": {
+                "X": 10,
+                "Y": 20
+            }
+        }
+    },
+    {
+        "input": "G1 X5 Y15",
+        "expected": {
+            "cmd": "G1",
+            "params": {
+                "X": 5,
+                "Y": 15
+            }
+        }
+    },
+    {
+        "input": "G40",
+        "expected": {
+            "cmd": "G40",
+            "params": {}
+        }
+    }
+]
