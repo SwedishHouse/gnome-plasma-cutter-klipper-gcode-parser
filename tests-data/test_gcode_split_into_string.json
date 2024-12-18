@@ -13,7 +13,7 @@
   },
   {
     "input": "G40\nG54\nG90\nG49\nG80\nG91.1",
-    "expected": ["G40", "G54", "G90", "G49", "G80", "G91.1"]
+    "expected": ["G40", "G54", "G90", "G49", "G80", "G91_1"]
   },
   {
     "input": "G40 G54",
@@ -38,5 +38,25 @@
   {
     "input": "\n\n\n",
     "expected": []
+  },
+  {
+    "input": "G40\nG54\nG90\nG01 X100 Y-152.2 Z11.2\nG49\nG80\nG91.1",
+    "expected": ["G40", "G54", "G90","G01 X100 Y-152.2 Z11.2", "G49", "G80", "G91_1"]
+  },
+  {
+    "input": "X-100 Y+152.2 Z32",
+    "expected": []
+  },
+  {
+    "input": "set_origin",
+    "expected": ["set_origin"]
+  },
+  {
+    "input": "QUERY_ENDSTOP",
+    "expected": ["QUERY_ENDSTOP"]
+  },
+  {
+    "input": "QUERY_ENDSTOP G01 X-10 Y152.2 Z10 A2 B3.1 C.2",
+    "expected": ["QUERY_ENDSTOP", "G01 X-10 Y152.2 Z10 A2 B3.1 C.2"]
   }
 ]
