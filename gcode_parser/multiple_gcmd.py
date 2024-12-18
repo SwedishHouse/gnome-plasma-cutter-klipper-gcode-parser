@@ -43,6 +43,9 @@ class GCode:
 
 class GCodeSplitter:
 
+    MOVE_CMDS = ('G0', 'G00', 'G1', 'G01', 'G2', 'G02', 'G3', 'G03')
+
+
     def __init__(self) -> None:
         self.PATTERN = r'([GMSFTDH]-?\d+\.?\d*)|([XYZABCIJKR]-?\d+\.?\d*)|\(.*?\)'
 
@@ -51,6 +54,43 @@ class GCodeSplitter:
         # Регулярное выражение для проверки, содержит ли команда только координаты
         pattern = r"\b(?:[XYZABC](?:\+|-)?\d+(?:\.\d+)?)|[IJKP](?:\+|-)?\d+(?:\.\d+)?\b"
         return re.match(pattern, command) is not None
+
+    @staticmethod
+    def has_multiple_commands(command):
+        # Регулярное выражение для проверки наличия нескольких команд в строке
+        pattern = r'^[GMSF]\d+(\.\d+)?(\s+[GMSF]\d+(\.\d+)?)+$'
+        return re.match(pattern, command) is not None
+
+    @staticmethod
+    def remove_comments(command):
+        # Регулярное выражение для удаления комментариев внутри скобок
+        return re.sub(r'\(.*?\)', '', command).strip()
+
+    def split_grouped_commands(self, commands):
+        processed_commands = []
+        for command in commands:
+            command = self.remove_comments(command)
+            # Проверка на наличие нескольких команд в строке
+            if self.has_multiple_commands(command):
+                # Разделение сгруппированных команд
+                # split_commands = re.findall(r'[GMSF]\d+(\.\d+)?', command)
+                split_commands = command.split()
+                split_commands = [self.replace_decimal_point(cmd) for cmd in split_commands]
+                processed_commands.extend(split_commands)
+            else:
+                command = self.replace_decimal_point(command)
+                processed_commands.append(command)
+        return processed_commands
+
+    @staticmethod
+    def replace_decimal_point(command):
+        # Регулярное выражение для замены точки на нижнее подчеркивание в вещественных числах
+        return re.sub(r'(\d+)\.(\d+)', r'\1_\2', command)
+
+    @staticmethod
+    def is_dots_in_cmd(cmd):
+        return re.match(r'^[GMS][0-9]+(\.[0-9]+)?$', cmd)
+    #                 command = command.replace('.', '_')
 
     def parse_gcode_line(self, line: list) -> list:
         # Регулярное выражение для поиска команд и их параметров
@@ -87,6 +127,7 @@ class GCodeSplitter:
 if __name__ == '__main__':
     gcode = GCode("G00 X15.2")
     splitter = GCodeSplitter()
-    data = "QUERY_ENDSTOP".split('\n')
-    res = splitter.parse_gcode_line(data)
+    # data = "QUERY_ENDSTOP".split('\n')
+    # res = splitter.parse_gcode_line(data)
+    res = splitter.split_grouped_commands(["G0 X10 Y20", "G40 G54 G92.1"])
     # print(splitter.is_coordinate_command("X-100 Y+152.2 Z32"))

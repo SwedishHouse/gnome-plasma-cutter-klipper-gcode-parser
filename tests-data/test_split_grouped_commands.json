@@ -1,0 +1,54 @@
+[
+  {
+    "input": ["G0 X10 Y20", "G40 G54 G92.1"],
+    "expected": ["G0 X10 Y20", "G40", "G54", "G92_1"]
+  },
+  {
+    "input": ["G0 X10 Y20"],
+    "expected": ["G0 X10 Y20"]
+  },
+  {
+    "input": ["G40 G54 G92.1"],
+    "expected": ["G40", "G54", "G92_1"]
+  },
+  {
+    "input": ["G40"],
+    "expected": ["G40"]
+  },
+  {
+    "input": ["G0 X10 Y20", "G40 G54 G92.1", "M05"],
+    "expected": ["G0 X10 Y20", "G40", "G54", "G92_1", "M05"]
+  },
+  {
+    "input": ["G01 X10 Y20", "G40 G54 G92.1", "M5"],
+    "expected": ["G01 X10 Y20", "G40", "G54", "G92_1", "M5"]
+  },
+  {
+    "input": ["G00 X10 Y20", "G28","G40 G54 G92.1", "M05", "QUERY_ENDSTOP"],
+    "expected": ["G00 X10 Y20", "G28","G40", "G54", "G92_1", "M05", "QUERY_ENDSTOP"]
+  },
+  {
+    "input": ["QUERY_ENDSTOP"],
+    "expected": ["QUERY_ENDSTOP"]
+  },
+  {
+    "input": ["set_origin"],
+    "expected": ["set_origin"]
+  },
+  {
+    "input": ["QUERY_ENDSTOP", "G40 G54 G80", "G21 (Units: Metric)"],
+    "expected": ["QUERY_ENDSTOP", "G40", "G54", "G80", "G21"]
+  },
+  {
+    "input": ["G21 (Units: Metric)"],
+    "expected": ["G21"]
+  },
+  {
+    "input": ["(Part: Алексей Ю)"],
+    "expected": [""]
+  },
+  {
+    "input": ["G40 G54 G90 G49 G80 G91.1"],
+    "expected": ["G40", "G54", "G90", "G49", "G80", "G91_1"]
+  }
+]
