@@ -50,6 +50,18 @@ class GCodeSplitter:
         self.PATTERN = r'([GMSFTDH]-?\d+\.?\d*)|([XYZABCIJKR]-?\d+\.?\d*)|\(.*?\)'
 
     @staticmethod
+    def parse_commands(command_string):
+        pattern = r'(M\d+ S\d+)|([GSFM]\d+)'
+        matches = re.findall(pattern, command_string)
+        commands = []
+        for match in matches:
+            if match[0]:
+                commands.append(match[0])  # Команда типа Mxxx Sxxx
+            else:
+                commands.append(match[1])  # Другие команды (Gxxx, Fxxx, Sxxx, Mxxx)
+        return commands
+
+    @staticmethod
     def replace_decimal_point(command):
         # Регулярное выражение для замены точки на нижнее подчеркивание в вещественных числах
         return re.sub(r'(\d+)\.(\d+)', r'\1_\2', command)
@@ -69,6 +81,9 @@ class GCodeSplitter:
         pattern = r'^[XYZABCIJ]\s*-?\d+(\.\d+)?(\s+[XYZABCIJ]\s*-?\d+(\.\d+)?)*$'
         return re.match(pattern, command) is not None
 
+    # def process_spindle_command(self, command):
+
+
     def split_grouped_commands(self, commands: list):
         processed_commands = []
         for command in commands:
@@ -85,6 +100,10 @@ class GCodeSplitter:
                     command = self.last_command + ' ' + command
                 processed_commands.append(command)
             else:
+                if not re.match(r'M\d+ S\d+$', command) and re.match(r'S\d+$', command):
+                    command = f'S {command[1::]}'
+                if command.startswith('F'):
+                    command = f'{self.last_command} {command}'
                 # command = self.replace_decimal_point(command)
                 processed_commands.append(command)
                 if len(command) > 0:

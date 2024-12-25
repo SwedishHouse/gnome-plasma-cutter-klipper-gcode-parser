@@ -64,11 +64,19 @@
     "expected": ["G21"]
   },
   {
+    "input": ["set_origin"],
+    "expected": ["set_origin"]
+  },
+  {
     "input": ["S1000"],
     "expected": ["S 1000"]
   },
   {
     "input": ["F1000"],
-    "expected": ["F 1000"]
+    "expected": ["G03 F1000"]
+  },
+  {
+    "input": ["M220 S180"],
+    "expected": ["M220 S180"]
   }
 ]
