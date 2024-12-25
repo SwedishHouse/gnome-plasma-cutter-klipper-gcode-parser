@@ -58,5 +58,21 @@
   {
     "input": "QUERY_ENDSTOP G01 X-10 Y152.2 Z10 A2 B3.1 C.2",
     "expected": ["QUERY_ENDSTOP", "G01 X-10 Y152.2 Z10 A2 B3.1 C.2"]
+  },
+  {
+    "input": "S1000",
+    "expected": ["S 1000"]
+  },
+  {
+    "input": "QUERY_ENDSTOP G01 X-10 Y152.2 Z10 A2 B3.1 C.2 S1000",
+    "expected": ["QUERY_ENDSTOP", "G01 X-10 Y152.2 Z10 A2 B3.1 C.2", "S 1000"]
+  },
+  {
+    "input": "QUERY_ENDSTOP G01 X-10 Y152.2 Z10 A2 B3.1 C.2 S1000 G92 G1 X+10.1 Z-2.5",
+    "expected": ["QUERY_ENDSTOP", "G01 X-10 Y152.2 Z10 A2 B3.1 C.2", "S 1000", "G92", "G1 X10.1", "Z-2.5"]
+  },
+  {
+    "input": "F1000",
+    "expected": ["QUERY_ENDSTOP", "G01 X-10 Y152.2 Z10 A2 B3.1 C.2"]
   }
 ]

@@ -45,15 +45,19 @@ class GCodeSplitter:
 
     MOVE_CMDS = ('G0', 'G00', 'G1', 'G01', 'G2', 'G02', 'G3', 'G03')
 
-
     def __init__(self) -> None:
+        self.last_command = "G0"
         self.PATTERN = r'([GMSFTDH]-?\d+\.?\d*)|([XYZABCIJKR]-?\d+\.?\d*)|\(.*?\)'
 
     @staticmethod
-    def is_coordinate_command(command):
-        # Регулярное выражение для проверки, содержит ли команда только координаты
-        pattern = r"\b(?:[XYZABC](?:\+|-)?\d+(?:\.\d+)?)|[IJKP](?:\+|-)?\d+(?:\.\d+)?\b"
-        return re.match(pattern, command) is not None
+    def replace_decimal_point(command):
+        # Регулярное выражение для замены точки на нижнее подчеркивание в вещественных числах
+        return re.sub(r'(\d+)\.(\d+)', r'\1_\2', command)
+
+    @staticmethod
+    def remove_comments(command):
+        # Регулярное выражение для удаления комментариев внутри скобок
+        return re.sub(r'\(.*?\)', '', command).strip()
 
     @staticmethod
     def has_multiple_commands(command):
@@ -61,12 +65,11 @@ class GCodeSplitter:
         pattern = r'^[GMSF]\d+(\.\d+)?(\s+[GMSF]\d+(\.\d+)?)+$'
         return re.match(pattern, command) is not None
 
-    @staticmethod
-    def remove_comments(command):
-        # Регулярное выражение для удаления комментариев внутри скобок
-        return re.sub(r'\(.*?\)', '', command).strip()
+    def is_coordinate_only(self, command):
+        pattern = r'^[XYZABCIJ]\s*-?\d+(\.\d+)?(\s+[XYZABCIJ]\s*-?\d+(\.\d+)?)*$'
+        return re.match(pattern, command) is not None
 
-    def split_grouped_commands(self, commands):
+    def split_grouped_commands(self, commands: list):
         processed_commands = []
         for command in commands:
             command = self.remove_comments(command)
@@ -77,20 +80,25 @@ class GCodeSplitter:
                 split_commands = command.split()
                 split_commands = [self.replace_decimal_point(cmd) for cmd in split_commands]
                 processed_commands.extend(split_commands)
-            else:
-                command = self.replace_decimal_point(command)
+            elif self.is_coordinate_only(command):
+                if self.last_command:
+                    command = self.last_command + ' ' + command
                 processed_commands.append(command)
+            else:
+                # command = self.replace_decimal_point(command)
+                processed_commands.append(command)
+                if len(command) > 0:
+                    cmd_identifier = command.split()[0]
+                    if cmd_identifier in self.MOVE_CMDS:
+                        self.last_command = cmd_identifier
         return processed_commands
 
-    @staticmethod
-    def replace_decimal_point(command):
-        # Регулярное выражение для замены точки на нижнее подчеркивание в вещественных числах
-        return re.sub(r'(\d+)\.(\d+)', r'\1_\2', command)
 
-    @staticmethod
-    def is_dots_in_cmd(cmd):
-        return re.match(r'^[GMS][0-9]+(\.[0-9]+)?$', cmd)
-    #                 command = command.replace('.', '_')
+
+    # @staticmethod
+    # def is_dots_in_cmd(cmd):
+    #     return re.match(r'^[GMS][0-9]+(\.[0-9]+)?$', cmd)
+    # #                 command = command.replace('.', '_')
 
     def parse_gcode_line(self, line: list) -> list:
         # Регулярное выражение для поиска команд и их параметров

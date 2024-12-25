@@ -76,7 +76,7 @@ def test_split_grouped_commands(test_data_split_grouped_commands):
     for index, case in enumerate(test_data_split_grouped_commands):
         input_data = case['input']
         expected_result = case['expected']
-        assert splitter.split_grouped_commands(input_data) == expected_result, f"{index}: data = {input_data} expected = {expected_result}"
+        assert splitter.split_grouped_commands(input_data) == expected_result, f'{index}: data = {input_data} expected = {expected_result}'
 
 
 # @pytest.fixture
